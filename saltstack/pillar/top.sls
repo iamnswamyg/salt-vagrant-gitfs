@@ -1,3 +1,3 @@
 base:
-  'minion':
+  'minion1':
     - example-hugo-site
