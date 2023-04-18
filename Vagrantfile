@@ -20,6 +20,9 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     master_config.vm.host_name = 'saltmaster.local'
     master_config.vm.network "private_network", ip: "#{net_ip}.10"
     
+    master_config.vm.synced_folder "saltstack/etc/master.d/", "/etc/salt/master.d/", type: "sshfs"
+    master_config.vm.synced_folder "saltstack/pillar/", "/srv/pillar/", type: "sshfs"
+    
     config.vm.provision "shell", inline: <<-SHELL
       sudo apt install python3-pygit2
       
@@ -27,6 +30,10 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
       # Set owner and permissions for /srv/salt
       sudo chown -R $USER:$USER /srv/salt
       sudo chmod -R 755 /srv/salt
+      
+      sudo mkdir -p /srv/pillar
+      sudo chown -R $USER:$USER /srv/pillar
+      sudo chmod -R 755 /srv/pillar
     SHELL
     
     master_config.vm.provision :salt do |salt|
